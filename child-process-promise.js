@@ -12,23 +12,22 @@ var childProcess = require('child_process'),
 			});
 		});
 	},
-	spawnPromise = function (command, options) {
+	spawnPromise = function (command, input, args) {
 		'use strict';
 		return new Promise(function (resolve, reject) {
-			var process = childProcess.spawn(command, options);
+			var process = childProcess.spawn(command, args),
+				output = '';
+			process.on('error', function (err) {
+				reject(err);
+			});
 			process.stdout.on('data', function (buffer) {
-				console.log(buffer.toString());
+				output += buffer.toString();
 			});
-			process.stderr.on('data', function (buffer) {
-				console.error(buffer.toString());
+			process.stdout.on('end', function () {
+				resolve(output);
 			});
-			process.on('close', function (code) {
-				if (code !== 0) {
-					reject(code);
-				} else {
-					resolve();
-				}
-			});
+			process.stdin.write(input);
+			process.stdin.end();
 		});
 	};
 module.exports = {

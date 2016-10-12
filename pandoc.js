@@ -38,9 +38,9 @@ var os = require('os'),
 		return exists(path.join(os.tmpdir(), 'pandoc')).catch(unzip);
 	};
 
-module.exports = function pandoc(inPath, outPath, additionalOptions) {
+module.exports = function pandoc(input, additionalOptions) {
 	'use strict';
 	return findUnpackedBinary().then(function (commandPath) {
-		return cp.spawn(commandPath, [inPath, '-o', outPath].concat(additionalOptions || []));
+		return cp.spawn(commandPath, input, additionalOptions || []);
 	});
 };
