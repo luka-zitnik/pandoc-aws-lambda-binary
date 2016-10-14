@@ -17,9 +17,6 @@ var childProcess = require('child_process'),
 		return new Promise(function (resolve, reject) {
 			var process = childProcess.spawn(command, args),
 				output = '';
-			process.on('error', function (err) {
-				reject(err);
-			});
 			process.stdout.on('data', function (buffer) {
 				output += buffer.toString();
 			});
