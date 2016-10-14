@@ -6,7 +6,7 @@ var os = require('os'),
 	exists = function (target) {
 		'use strict';
 		return new Promise(function (resolve, reject) {
-			fs.access(target, function (err) {
+			fs.access(target, fs.X_OK, function (err) {
 				if (err) {
 					reject(target);
 				} else {
