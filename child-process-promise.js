@@ -12,19 +12,23 @@ var childProcess = require('child_process'),
 			});
 		});
 	},
-	spawnPromise = function (command, input, args) {
+	spawnPromise = function (command, options) {
 		'use strict';
 		return new Promise(function (resolve, reject) {
-			var process = childProcess.spawn(command, args),
-				output = '';
+			var process = childProcess.spawn(command, options);
 			process.stdout.on('data', function (buffer) {
-				output += buffer.toString();
+				console.log(buffer.toString());
 			});
-			process.stdout.on('end', function () {
-				resolve(output);
+			process.stderr.on('data', function (buffer) {
+				console.error(buffer.toString());
 			});
-			process.stdin.write(input);
-			process.stdin.end();
+			process.on('close', function (code) {
+				if (code !== 0) {
+					reject(code);
+				} else {
+					resolve();
+				}
+			});
 		});
 	};
 module.exports = {
